@@ -4,7 +4,7 @@ import crypto from "node:crypto";
 import { extension as mimeExtension } from "mime-types";
 import { Article, Config, MediaAsset } from "../types.js";
 import { discoverMediaUrls } from "./mediaScan.js";
-import { CacheManager } from "../cache/cacheManager.js";
+import { CacheManager } from "../cache/cacheManager.ts";
 
 const mediaCache = new CacheManager("cache/media-map.json", 24 * 365); // Long cache for media (1 year)
 

@@ -1,6 +1,6 @@
 import { SimplePool, nip19, Event as NostrEvent, Filter } from "nostr-tools";
 import { Config, ProfileMetadata, Comment } from "../types.js";
-import { CacheManager } from "../cache/cacheManager.js";
+import { CacheManager } from "../cache/cacheManager.ts";
 
 const cache = new CacheManager();
 
