@@ -1,0 +1,51 @@
+{% extends "layout.njk" %}
+
+{% set pageTitle = article.title ~ " · " ~ site.title %}
+{% set pageDescription = article.summary or site.description %}
+{% set canonicalUrl = site.base_url ~ "/" ~ article.slug ~ ".html" %}
+{% set ogType = "article" %}
+{% set ogImage = article.image or "" %}
+
+{% block content %}
+  <article class="prose prose-invert max-w-none">
+    <h1>{{ article.title }}</h1>
+    <p class="text-sm text-slate-400">{{ (article.published_at * 1000) | date("Y-m-d") }}</p>
+    <div class="mt-6">{{ article.html | safe }}</div>
+  </article>
+
+  {% if article.tags.length %}
+    <div class="mt-8 flex flex-wrap gap-2">
+      {% for tag in article.tags %}
+        <a href="/tags/{{ tag }}/" class="rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-200">#{{ tag }}</a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if article.comments.length %}
+    <section class="mt-16 border-t border-slate-800 pt-8">
+      <h2 class="text-2xl font-semibold text-white mb-6">Comments ({{ article.comments.length }})</h2>
+      <div class="space-y-6">
+        {% for comment in article.comments %}
+          <div class="rounded-lg border border-slate-800 bg-slate-900/30 p-4">
+            <div class="flex items-start gap-3">
+              {% if comment.author_picture %}
+                <img src="{{ comment.author_picture }}" alt="{{ comment.author_name or 'Anonymous' }}" class="w-10 h-10 rounded-full" loading="lazy" />
+              {% else %}
+                <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-slate-400 text-sm">
+                  {{ (comment.author_name or comment.pubkey)[0] | upper }}
+                </div>
+              {% endif %}
+              <div class="flex-1 min-w-0">
+                <div class="flex items-baseline gap-2 mb-1">
+                  <span class="font-medium text-slate-200">{{ comment.author_name or comment.pubkey.slice(0, 8) + '...' }}</span>
+                  <span class="text-xs text-slate-500">{{ (comment.created_at * 1000) | date("Y-m-d") }}</span>
+                </div>
+                <p class="text-slate-300 whitespace-pre-wrap break-words">{{ comment.content }}</p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ pageTitle }}</title>
+    <meta name="description" content="{{ pageDescription }}" />
+    <link rel="canonical" href="{{ canonicalUrl }}" />
+
+    <meta property="og:title" content="{{ pageTitle }}" />
+    <meta property="og:description" content="{{ pageDescription }}" />
+    <meta property="og:type" content="{{ ogType }}" />
+    <meta property="og:url" content="{{ canonicalUrl }}" />
+    {% if ogImage %}
+    <meta property="og:image" content="{{ ogImage }}" />
+    {% endif %}
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{ pageTitle }}" />
+    <meta name="twitter:description" content="{{ pageDescription }}" />
+    {% if ogImage %}
+    <meta name="twitter:image" content="{{ ogImage }}" />
+    {% endif %}
+
+    <link rel="stylesheet" href="/css/site.css" />
+  </head>
+  <body class="bg-slate-950 text-slate-100">
+    <header class="border-b border-slate-800">
+      <div class="mx-auto max-w-4xl px-6 py-6">
+        <a href="/" class="text-2xl font-semibold text-white">{{ site.title }}</a>
+        <p class="mt-2 text-slate-300">{{ site.description }}</p>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-4xl px-6 py-10">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="border-t border-slate-800">
+      <div class="mx-auto max-w-4xl px-6 py-6 text-sm text-slate-400">
+        <p>Generated from Nostr using <a href="https://github.com/besoeasy/nostr2blog" target="_blank" rel="noopener noreferrer" class="text-slate-300 hover:text-white underline">Nostr2Blog</a></p>
+      </div>
+    </footer>
+
+    <script src="/js/site.js" defer></script>
+  </body>
+</html>
