@@ -39,7 +39,7 @@
     <meta property="og:image:alt" content="{{ pageTitle }}" />
     {% endif %}
     {% if ogType == 'article' %}
-    <meta property="article:published_time" content="{{ article.published_at * 1000 | date('iso') }}" />
+    <meta property="article:published_time" content="{{ article.published_at | date('iso') }}" />
     {% if article.modified_at %}
     <meta property="article:modified_time" content="{{ article.modified_at * 1000 | date('iso') }}" />
     {% endif %}

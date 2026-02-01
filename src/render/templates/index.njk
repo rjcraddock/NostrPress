@@ -34,7 +34,7 @@
       "headline": {{ article.title | dump | safe }},
       {% if article.summary %}"description": {{ article.summary | dump | safe }},{% endif %}
       {% if site.base_url %}"url": "{{ site.base_url }}/{{ article.slug }}.html",{% endif %}
-      "datePublished": "{{ (article.published_at * 1000) | date('iso') }}",
+      "datePublished": "{{ article.published_at | date('iso') }}",
       {% if article.modified_at %}"dateModified": "{{ (article.modified_at * 1000) | date('iso') }}",{% endif %}
       {% if article.image %}"image": "{{ article.image }}",{% endif %}
       "author": {
@@ -94,7 +94,7 @@
               
               <div class="relative p-8 lg:p-10 space-y-4">
                 <div class="flex items-center gap-3">
-                  <time class="text-sm font-medium text-slate-500 tracking-wide">{{ (article.published_at * 1000) | date("Y-m-d") }}</time>
+                  <time class="text-sm font-medium text-slate-500 tracking-wide">{{ article.published_at | date("Y-m-d") }}</time>
                   {% if article.tags.length %}
                     <span class="text-slate-300">•</span>
                     <div class="flex flex-wrap gap-2">
