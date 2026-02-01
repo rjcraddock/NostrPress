@@ -9,24 +9,53 @@
     <link rel="canonical" href="{{ canonicalUrl }}" />
     {% endif %}
 
+    <!-- Open Graph / Facebook / Telegram / WhatsApp -->
     <meta property="og:title" content="{{ pageTitle }}" />
     <meta property="og:description" content="{{ pageDescription }}" />
-    <meta property="og:type" content="{{ ogType }}" />
+    <meta property="og:type" content="{{ ogType or 'website' }}" />
+    <meta property="og:site_name" content="{{ site.title }}" />
+    <meta property="og:locale" content="en_US" />
     {% if canonicalUrl %}
     <meta property="og:url" content="{{ canonicalUrl }}" />
     {% endif %}
     {% if ogImage %}
     <meta property="og:image" content="{{ ogImage }}" />
+    <meta property="og:image:secure_url" content="{{ ogImage }}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="{{ pageTitle }}" />
+    {% endif %}
+    {% if ogType == 'article' %}
+    <meta property="article:published_time" content="{{ article.published_at * 1000 | date('iso') }}" />
+    {% if article.modified_at %}
+    <meta property="article:modified_time" content="{{ article.modified_at * 1000 | date('iso') }}" />
+    {% endif %}
+    <meta property="article:author" content="{{ author.profile.display_name or author.profile.name }}" />
+    {% for tag in article.tags %}
+    <meta property="article:tag" content="{{ tag }}" />
+    {% endfor %}
     {% endif %}
 
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="{{ pageTitle }}" />
     <meta name="twitter:description" content="{{ pageDescription }}" />
     {% if ogImage %}
     <meta name="twitter:image" content="{{ ogImage }}" />
+    <meta name="twitter:image:alt" content="{{ pageTitle }}" />
+    {% endif %}
+    {% if author.profile.twitter %}
+    <meta name="twitter:creator" content="@{{ author.profile.twitter }}" />
+    {% endif %}
+
+    <!-- Pinterest -->
+    {% if ogImage %}
+    <meta property="og:see_also" content="{{ canonicalUrl }}" />
+    <meta name="pinterest-rich-pin" content="true" />
     {% endif %}
 
     <link rel="stylesheet" href="/css/site.css" />
+    <link rel="stylesheet" href="/css/print.css" media="print" />
     <script>
       // Auto-detect canonical URL and OG URL if not set at build time
       if (!document.querySelector('link[rel="canonical"]')) {
@@ -52,12 +81,27 @@
       html {
         scroll-behavior: smooth;
       }
+      .skip-to-content {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: #3b82f6;
+        color: white;
+        padding: 8px 16px;
+        text-decoration: none;
+        border-radius: 0 0 4px 0;
+        z-index: 100;
+      }
+      .skip-to-content:focus {
+        top: 0;
+      }
     </style>
   </head>
   <body class="bg-white text-slate-900 antialiased">
+    <a href="#main-content" class="skip-to-content">Skip to content</a>
     <div class="flex min-h-screen">
       <!-- Sidebar: responsive, sticky -->
-      <aside class="hidden lg:flex lg:w-80 xl:w-96 border-r border-slate-200 bg-slate-50 sticky top-0 h-screen overflow-y-auto scrollbar-hide">
+      <aside class="hidden lg:flex lg:w-80 xl:w-96 border-r border-slate-200 bg-slate-50 sticky top-0 h-screen overflow-y-auto scrollbar-hide" role="complementary" aria-label="Author information">
         <div class="w-full p-8 xl:p-12 flex items-center">
           <div class="w-full space-y-8 animate-fade-in">
           {% if author %}
@@ -80,8 +124,8 @@
               
               <div class="flex flex-col gap-3 pt-4">
                 {% if author.profile.website %}
-                <a href="{{ author.profile.website }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors duration-200">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="{{ author.profile.website }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors duration-200" aria-label="Visit website">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
                   </svg>
                   <span>Website</span>
@@ -89,11 +133,47 @@
                 {% endif %}
                 
                 {% if author.npub %}
-                <a href="https://nosta.me/{{ author.npub }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors duration-200">
-                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <a href="https://nosta.me/{{ author.npub }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors duration-200" aria-label="View Nostr profile">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"></path>
                   </svg>
                   <span>Nostr Profile</span>
+                </a>
+                {% endif %}
+
+                {% if author.profile.twitter %}
+                <a href="https://twitter.com/{{ author.profile.twitter }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors duration-200" aria-label="Follow on Twitter">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+                  </svg>
+                  <span>Twitter</span>
+                </a>
+                {% endif %}
+
+                {% if author.profile.github %}
+                <a href="https://github.com/{{ author.profile.github }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors duration-200" aria-label="View GitHub profile">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
+                  </svg>
+                  <span>GitHub</span>
+                </a>
+                {% endif %}
+
+                {% if author.profile.telegram %}
+                <a href="https://t.me/{{ author.profile.telegram }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors duration-200" aria-label="Contact on Telegram">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"></path>
+                  </svg>
+                  <span>Telegram</span>
+                </a>
+                {% endif %}
+
+                {% if author.profile.lud16 %}
+                <a href="lightning:{{ author.profile.lud16 }}" class="inline-flex items-center justify-center gap-2 text-sm font-medium text-slate-700 hover:text-yellow-600 transition-colors duration-200" aria-label="Send Lightning payment">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"></path>
+                  </svg>
+                  <span>Lightning</span>
                 </a>
                 {% endif %}
               </div>
@@ -118,19 +198,19 @@
       <!-- Mobile Header -->
       <div class="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-slate-200">
         <div class="px-6 py-4">
-          <a href="/" class="text-2xl font-bold tracking-tight text-slate-900">{{ site.title }}</a>
+          <a href="/" class="text-2xl font-bold tracking-tight text-slate-900" aria-label="Home">{{ site.title }}</a>
         </div>
       </div>
 
       <!-- Main content: responsive -->
       <div class="flex-1 flex flex-col">
-        <main class="flex-1 w-full px-6 lg:px-12 xl:px-16 py-12 lg:py-16 xl:py-20 mt-16 lg:mt-0">
+        <main id="main-content" class="flex-1 w-full px-6 lg:px-12 xl:px-16 py-12 lg:py-16 xl:py-20 mt-16 lg:mt-0" role="main">
           <div class="max-w-5xl mx-auto animate-fade-in">
             {% block content %}{% endblock %}
           </div>
         </main>
 
-        <footer class="border-t border-slate-200 px-6 lg:px-12 xl:px-16 py-8 bg-slate-50">
+        <footer class="border-t border-slate-200 px-6 lg:px-12 xl:px-16 py-8 bg-slate-50" role="contentinfo">
           <div class="max-w-5xl mx-auto">
             <p class="text-sm text-slate-500">Generated from Nostr using <a href="https://github.com/besoeasy/NostrPress" target="_blank" rel="noopener noreferrer" class="text-slate-700 hover:text-slate-900 transition-colors duration-200 font-medium">NostrPress</a></p>
           </div>

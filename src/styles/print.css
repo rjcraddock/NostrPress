@@ -1,0 +1,230 @@
+/* Print Stylesheet for NostrPress */
+@media print {
+  /* Reset and optimize for print */
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Page setup */
+  @page {
+    margin: 2cm;
+    size: A4;
+  }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 12pt;
+    line-height: 1.6;
+  }
+
+  /* Hide non-essential elements */
+  aside,
+  nav,
+  footer,
+  .skip-to-content,
+  button,
+  [role="complementary"],
+  [aria-label="Social Share"],
+  .border-t.border-slate-100 {
+    display: none !important;
+  }
+
+  /* Main content full width */
+  main {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Article layout */
+  article {
+    page-break-after: always;
+  }
+
+  /* Headings */
+  h1 {
+    font-size: 24pt;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+    page-break-after: avoid;
+  }
+
+  h2 {
+    font-size: 18pt;
+    font-weight: bold;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    page-break-after: avoid;
+  }
+
+  h3 {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-top: 0.8em;
+    margin-bottom: 0.4em;
+    page-break-after: avoid;
+  }
+
+  /* Metadata */
+  time,
+  .text-slate-500 {
+    font-size: 10pt;
+    font-style: italic;
+    color: #666 !important;
+  }
+
+  /* Tags */
+  [aria-label="Article tags"] a {
+    display: inline-block;
+    padding: 2px 8px;
+    border: 1px solid #ccc !important;
+    border-radius: 4px;
+    font-size: 9pt;
+    margin-right: 4px;
+    text-decoration: none;
+  }
+
+  /* Content */
+  .prose {
+    max-width: 100% !important;
+  }
+
+  .prose p {
+    margin-bottom: 0.8em;
+    text-align: justify;
+    orphans: 3;
+    widows: 3;
+  }
+
+  .prose a {
+    text-decoration: underline;
+    color: #000 !important;
+  }
+
+  /* Show URLs after links */
+  .prose a[href^="http"]:after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    color: #666 !important;
+  }
+
+  /* Images */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+    page-break-inside: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Code blocks */
+  pre,
+  code {
+    border: 1px solid #ccc !important;
+    page-break-inside: avoid;
+    font-family: 'Courier New', monospace;
+    font-size: 10pt;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  pre {
+    padding: 10px;
+    margin: 1em 0;
+  }
+
+  /* Blockquotes */
+  blockquote {
+    border-left: 4px solid #ccc !important;
+    padding-left: 1em;
+    margin: 1em 0;
+    font-style: italic;
+    page-break-inside: avoid;
+  }
+
+  /* Lists */
+  ul,
+  ol {
+    margin-left: 1.5em;
+  }
+
+  li {
+    margin-bottom: 0.3em;
+  }
+
+  /* Tables */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+    page-break-inside: avoid;
+  }
+
+  th,
+  td {
+    border: 1px solid #ccc !important;
+    padding: 8px;
+    text-align: left;
+  }
+
+  th {
+    font-weight: bold;
+    background: #f0f0f0 !important;
+  }
+
+  /* Avoid breaking these elements */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+
+  img, table, pre {
+    page-break-inside: avoid;
+  }
+
+  /* Comments section */
+  [aria-labelledby="comments-heading"] {
+    display: none !important;
+  }
+
+  /* Related articles - optional, show minimal version */
+  [aria-labelledby="related-articles-heading"] {
+    margin-top: 2em;
+    page-break-before: always;
+  }
+
+  [aria-labelledby="related-articles-heading"] h2 {
+    font-size: 16pt;
+  }
+
+  [aria-labelledby="related-articles-heading"] article {
+    page-break-inside: avoid;
+    margin-bottom: 1em;
+  }
+
+  [aria-labelledby="related-articles-heading"] img {
+    display: none !important;
+  }
+
+  /* Article header cleanup */
+  header {
+    border-bottom: 2px solid #000 !important;
+    padding-bottom: 1em;
+    margin-bottom: 1.5em;
+  }
+
+  /* SVG icons - hide them */
+  svg {
+    display: none !important;
+  }
+
+  /* Remove hover/interactive states */
+  a:hover,
+  .hover\:text-blue-600,
+  .hover\:border-blue-300,
+  .transition-all {
+    /* No hover effects in print */
+  }
+}

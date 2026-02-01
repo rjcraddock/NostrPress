@@ -81,6 +81,13 @@ function writeStaticAssets(outputDir: string) {
   } else {
     fs.writeFileSync(destJs, "");
   }
+
+  // Copy print.css
+  const srcPrintCss = path.resolve("src/styles/print.css");
+  const destPrintCss = path.join(outputDir, "css", "print.css");
+  if (fs.existsSync(srcPrintCss)) {
+    fs.copyFileSync(srcPrintCss, destPrintCss);
+  }
 }
 
 function generateRss(context: RenderContext, outputDir: string) {

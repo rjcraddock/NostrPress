@@ -36,6 +36,10 @@ export interface ProfileMetadata {
   banner?: string;
   nip05?: string;
   website?: string;
+  lud16?: string; // Lightning address
+  twitter?: string;
+  github?: string;
+  telegram?: string;
 }
 
 export interface Comment {
@@ -55,10 +59,14 @@ export interface Article {
   content: string;
   html: string;
   published_at: number;
+  modified_at?: number;
   tags: string[];
   image?: string;
   imeta_urls: string[];
   comments: Comment[];
+  readingTime?: number; // in minutes
+  excerpt?: string; // SEO-friendly excerpt
+  wordCount?: number;
 }
 
 export interface RenderContext {

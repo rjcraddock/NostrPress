@@ -25,6 +25,33 @@ const sanitizer = (html: string) =>
     disallowedTagsMode: "discard"
   });
 
+export function calculateReadingTime(text: string): number {
+  const wordsPerMinute = 200;
+  const words = text.trim().split(/\s+/).length;
+  return Math.ceil(words / wordsPerMinute);
+}
+
+export function generateExcerpt(content: string, maxLength: number = 160): string {
+  const plainText = content.replace(/[#*`\[\]]/g, '').trim();
+  if (plainText.length <= maxLength) return plainText;
+  return plainText.substring(0, maxLength).trim() + '...';
+}
+
+export function findRelatedArticles(current: Article, allArticles: Article[], limit: number = 3): Article[] {
+  const scored = allArticles
+    .filter(a => a.id !== current.id)
+    .map(article => {
+      let score = 0;
+      const commonTags = article.tags.filter(t => current.tags.includes(t));
+      score += commonTags.length * 10;
+      const daysDiff = Math.abs(article.published_at - current.published_at) / (60 * 60 * 24);
+      if (daysDiff < 30) score += 5;
+      return { article, score };
+    })
+    .sort((a, b) => b.score - a.score);
+  return scored.slice(0, limit).map(s => s.article);
+}
+
 export function renderMarkdown(article: Article): string {
   const raw = md.render(article.content);
   return sanitizer(raw);
@@ -49,6 +76,9 @@ export function createRenderer(templateDir: string) {
       const day = String(date.getUTCDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
     }
+    if (format === "iso") {
+      return date.toISOString();
+    }
     return date.toISOString();
   });
   return env;
@@ -59,6 +89,13 @@ export function renderSite(context: RenderContext, outputDir: string) {
   const env = createRenderer(templatesDir);
 
   const articlesSorted = [...context.articles].sort((a, b) => b.published_at - a.published_at);
+
+  // Enrich articles with reading time, excerpts, and related articles
+  for (const article of articlesSorted) {
+    article.readingTime = calculateReadingTime(article.content);
+    article.excerpt = article.summary || generateExcerpt(article.content);
+    article.wordCount = article.content.trim().split(/\s+/).length;
+  }
 
   const indexHtml = env.render("index.njk", { ...context, articles: articlesSorted });
   writeFile(path.join(outputDir, "index.html"), indexHtml);
@@ -72,7 +109,8 @@ export function renderSite(context: RenderContext, outputDir: string) {
   }
 
   for (const article of articlesSorted) {
-    const articleHtml = env.render("article.njk", { ...context, article });
+    const relatedArticles = findRelatedArticles(article, articlesSorted);
+    const articleHtml = env.render("article.njk", { ...context, article, relatedArticles });
     writeFile(path.join(outputDir, `${article.slug}.html`), articleHtml);
   }
 
