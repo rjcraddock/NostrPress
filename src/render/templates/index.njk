@@ -4,7 +4,72 @@
 {% set pageDescription = site.description %}
 {% set canonicalUrl = site.base_url if site.base_url else "" %}
 {% set ogType = "website" %}
-{% set ogImage = "" %}
+{% set ogImage = articles[0].image if articles.length > 0 and articles[0].image else "" %}
+
+{% block additionalHead %}
+<!-- JSON-LD Structured Data for Website -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "{{ site.title }}",
+  "description": "{{ site.description }}",
+  {% if site.base_url %}"url": "{{ site.base_url }}",{% endif %}
+  {% if author %}"author": {
+    "@type": "Person",
+    "name": "{{ author.profile.display_name or author.profile.name }}",
+    {% if author.profile.about %}"description": {{ author.profile.about | dump | safe }},{% endif %}
+    {% if author.profile.picture %}"image": "{{ author.profile.picture }}",{% endif %}
+    {% if author.profile.website %}"url": "{{ author.profile.website }}",{% endif %}
+    "sameAs": [
+      {% if author.npub %}"https://nosta.me/{{ author.npub }}"{% endif %}{% if author.profile.twitter %},{% endif %}
+      {% if author.profile.twitter %}"https://twitter.com/{{ author.profile.twitter }}"{% endif %}{% if author.profile.github %},{% endif %}
+      {% if author.profile.github %}"https://github.com/{{ author.profile.github }}"{% endif %}
+    ]
+  },{% endif %}
+  "blogPost": [
+    {% for article in articles | slice(0, 10) %}
+    {
+      "@type": "BlogPosting",
+      "headline": {{ article.title | dump | safe }},
+      {% if article.summary %}"description": {{ article.summary | dump | safe }},{% endif %}
+      {% if site.base_url %}"url": "{{ site.base_url }}/{{ article.slug }}.html",{% endif %}
+      "datePublished": "{{ (article.published_at * 1000) | date('iso') }}",
+      {% if article.modified_at %}"dateModified": "{{ (article.modified_at * 1000) | date('iso') }}",{% endif %}
+      {% if article.image %}"image": "{{ article.image }}",{% endif %}
+      "author": {
+        "@type": "Person",
+        "name": "{{ author.profile.display_name or author.profile.name }}"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "{{ site.title }}"
+        {% if author.profile.picture %},
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ author.profile.picture }}"
+        }{% endif %}
+      }
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+
+<!-- Breadcrumb Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+    "@type": "ListItem",
+    "position": 1,
+    "name": "Home"
+    {% if site.base_url %},"item": "{{ site.base_url }}"{% endif %}
+  }]
+}
+</script>
+{% endblock %}
 
 {% block content %}
   <div class="space-y-12">

@@ -5,9 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ pageTitle }}</title>
     <meta name="description" content="{{ pageDescription }}" />
+    <meta name="author" content="{{ author.profile.display_name or author.profile.name or site.title }}" />
+    <meta name="generator" content="NostrPress" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="theme-color" content="#3b82f6" />
     {% if canonicalUrl %}
     <link rel="canonical" href="{{ canonicalUrl }}" />
     {% endif %}
+    
+    <!-- Favicon and Icons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    
+    <!-- RSS Feed -->
+    <link rel="alternate" type="application/rss+xml" title="{{ site.title }} RSS Feed" href="/rss.xml" />
 
     <!-- Open Graph / Facebook / Telegram / WhatsApp -->
     <meta property="og:title" content="{{ pageTitle }}" />
@@ -53,6 +66,19 @@
     <meta property="og:see_also" content="{{ canonicalUrl }}" />
     <meta name="pinterest-rich-pin" content="true" />
     {% endif %}
+    
+    <!-- Nostr Metadata -->
+    {% if author.npub %}
+    <meta name="nostr:npub" content="{{ author.npub }}" />
+    {% if author.nprofile %}
+    <meta name="nostr:nprofile" content="{{ author.nprofile }}" />
+    {% endif %}
+    {% if author.profile.lud16 %}
+    <meta name="lightning" content="{{ author.profile.lud16 }}" />
+    {% endif %}
+    {% endif %}
+
+    {% block additionalHead %}{% endblock %}
 
     <link rel="stylesheet" href="/css/site.css" />
     <link rel="stylesheet" href="/css/print.css" media="print" />
