@@ -22,11 +22,11 @@
 @layer components {
   /* Prose styling for article content */
   .prose {
-    @apply text-slate-300;
+    @apply text-slate-700;
   }
   
   .prose h1, .prose h2, .prose h3, .prose h4 {
-    @apply font-bold tracking-tight text-white;
+    @apply font-bold tracking-tight text-slate-900;
   }
   
   .prose h1 {
@@ -46,31 +46,31 @@
   }
   
   .prose a {
-    @apply text-cyan-400 hover:text-cyan-300 underline decoration-cyan-500/30 underline-offset-4 hover:decoration-cyan-400/50 transition-all duration-200;
+    @apply text-blue-600 hover:text-blue-700 underline decoration-blue-300 underline-offset-4 hover:decoration-blue-500 transition-all duration-200;
   }
   
   .prose strong {
-    @apply font-semibold text-white;
+    @apply font-semibold text-slate-900;
   }
   
   .prose em {
-    @apply italic text-slate-200;
+    @apply italic text-slate-800;
   }
   
   .prose code {
-    @apply text-cyan-300 bg-slate-900/50 px-2 py-1 rounded text-sm font-mono;
+    @apply text-blue-700 bg-blue-50 px-2 py-1 rounded text-sm font-mono border border-blue-100;
   }
   
   .prose pre {
-    @apply bg-gradient-to-br from-slate-900/80 to-slate-900/60 border border-slate-800/50 rounded-2xl p-6 overflow-x-auto my-8 shadow-2xl;
+    @apply bg-slate-900 border border-slate-200 rounded-2xl p-6 overflow-x-auto my-8 shadow-xl;
   }
   
   .prose pre code {
-    @apply bg-transparent px-0 py-0 text-slate-300;
+    @apply bg-transparent px-0 py-0 text-slate-100 border-0;
   }
   
   .prose blockquote {
-    @apply border-l-4 border-cyan-500/50 pl-6 py-2 my-8 italic text-slate-400 bg-slate-900/30 rounded-r-xl;
+    @apply border-l-4 border-blue-500 pl-6 py-2 my-8 italic text-slate-600 bg-blue-50 rounded-r-xl;
   }
   
   .prose ul, .prose ol {
@@ -82,11 +82,11 @@
   }
   
   .prose img {
-    @apply rounded-2xl shadow-2xl my-8 border border-slate-800/50;
+    @apply rounded-2xl shadow-xl my-8 border border-slate-200;
   }
   
   .prose hr {
-    @apply border-slate-800/50 my-12;
+    @apply border-slate-200 my-12;
   }
   
   /* Line clamp utilities */

@@ -9,39 +9,39 @@
 {% block content %}
   <div class="space-y-12">
     <header>
-      <h1 class="text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-white mb-4">Latest</h1>
-      <div class="h-1 w-16 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"></div>
+      <h1 class="text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-slate-900 mb-4">Latest</h1>
+      <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
     </header>
 
     <div class="space-y-8">
       {% for article in articles %}
         <article class="group relative">
           <a href="/{{ article.slug }}.html" class="block">
-            <div class="relative rounded-2xl border border-slate-800/50 bg-gradient-to-br from-slate-900/40 to-slate-900/20 backdrop-blur-sm p-8 lg:p-10 transition-all duration-500 ease-out hover:border-slate-700/80 hover:shadow-2xl hover:shadow-cyan-500/5 hover:-translate-y-1">
-              <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-blue-500/0 opacity-0 group-hover:opacity-5 transition-opacity duration-500"></div>
+            <div class="relative rounded-2xl border border-slate-200 bg-white p-8 lg:p-10 transition-all duration-500 ease-out hover:border-blue-300 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1">
+              <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/0 to-indigo-500/0 opacity-0 group-hover:opacity-5 transition-opacity duration-500"></div>
               
               <div class="relative space-y-4">
                 <div class="flex items-center gap-3">
                   <time class="text-sm font-medium text-slate-500 tracking-wide">{{ (article.published_at * 1000) | date("Y-m-d") }}</time>
                   {% if article.tags.length %}
-                    <span class="text-slate-700">•</span>
+                    <span class="text-slate-300">•</span>
                     <div class="flex flex-wrap gap-2">
                       {% for tag in article.tags | slice(0, 2) %}
-                        <span class="text-xs font-medium text-cyan-400/80">#{{ tag }}</span>
+                        <span class="text-xs font-medium text-blue-600">#{{ tag }}</span>
                       {% endfor %}
                     </div>
                   {% endif %}
                 </div>
                 
-                <h2 class="text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-slate-300 transition-all duration-300">
+                <h2 class="text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors duration-300">
                   {{ article.title }}
                 </h2>
                 
                 {% if article.summary %}
-                  <p class="text-base lg:text-lg text-slate-400 leading-relaxed line-clamp-2">{{ article.summary }}</p>
+                  <p class="text-base lg:text-lg text-slate-600 leading-relaxed line-clamp-2">{{ article.summary }}</p>
                 {% endif %}
                 
-                <div class="flex items-center gap-2 text-cyan-400/80 group-hover:text-cyan-400 transition-colors duration-300">
+                <div class="flex items-center gap-2 text-blue-600 group-hover:text-blue-700 transition-colors duration-300">
                   <span class="text-sm font-medium">Read article</span>
                   <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>

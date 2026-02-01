@@ -63,9 +63,6 @@ export function renderSite(context: RenderContext, outputDir: string) {
   const indexHtml = env.render("index.njk", { ...context, articles: articlesSorted });
   writeFile(path.join(outputDir, "index.html"), indexHtml);
 
-  const authorHtml = env.render("author.njk", { ...context, articles: articlesSorted });
-  writeFile(path.join(outputDir, "author", "index.html"), authorHtml);
-
   const tagMap = new Map<string, Article[]>();
   for (const article of articlesSorted) {
     for (const tag of article.tags) {

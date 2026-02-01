@@ -36,33 +36,33 @@
       }
     </style>
   </head>
-  <body class="bg-black text-slate-100 antialiased">
+  <body class="bg-white text-slate-900 antialiased">
     <div class="flex min-h-screen">
       <!-- Sidebar: responsive, sticky -->
-      <aside class="hidden lg:flex lg:w-80 xl:w-96 border-r border-slate-800/50 sticky top-0 h-screen overflow-y-auto scrollbar-hide">
+      <aside class="hidden lg:flex lg:w-80 xl:w-96 border-r border-slate-200 bg-slate-50 sticky top-0 h-screen overflow-y-auto scrollbar-hide">
         <div class="w-full p-8 xl:p-12 space-y-8 animate-fade-in">
           <div class="space-y-3">
-            <a href="/" class="block text-3xl xl:text-4xl font-bold tracking-tight text-white hover:text-slate-200 transition-all duration-300 ease-out">
+            <a href="/" class="block text-3xl xl:text-4xl font-bold tracking-tight text-slate-900 hover:text-slate-700 transition-all duration-300 ease-out">
               {{ site.title }}
             </a>
-            <p class="text-base text-slate-400 leading-relaxed">{{ site.description }}</p>
+            <p class="text-base text-slate-600 leading-relaxed">{{ site.description }}</p>
           </div>
 
           {% if author %}
-          <div class="pt-8 border-t border-slate-800/50 space-y-6">
+          <div class="pt-8 border-t border-slate-200 space-y-6">
             {% if author.profile.picture %}
               <div class="relative group">
-                <div class="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full opacity-0 group-hover:opacity-20 blur transition-all duration-500"></div>
-                <img class="relative h-24 w-24 xl:h-28 xl:w-28 rounded-full object-cover ring-2 ring-slate-800/50 transition-transform duration-300 group-hover:scale-105" src="{{ author.profile.picture }}" alt="Profile picture" />
+                <div class="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full opacity-0 group-hover:opacity-20 blur transition-all duration-500"></div>
+                <img class="relative h-24 w-24 xl:h-28 xl:w-28 rounded-full object-cover ring-2 ring-slate-200 transition-transform duration-300 group-hover:scale-105" src="{{ author.profile.picture }}" alt="Profile picture" />
               </div>
             {% endif %}
             <div class="space-y-3">
-              <h2 class="text-xl xl:text-2xl font-semibold text-white tracking-tight">{{ author.profile.display_name or author.profile.name or 'Author' }}</h2>
+              <h2 class="text-xl xl:text-2xl font-semibold text-slate-900 tracking-tight">{{ author.profile.display_name or author.profile.name or 'Author' }}</h2>
               {% if author.profile.about %}
-                <p class="text-sm xl:text-base text-slate-400 leading-relaxed line-clamp-6">{{ author.profile.about }}</p>
+                <p class="text-sm xl:text-base text-slate-600 leading-relaxed line-clamp-6">{{ author.profile.about }}</p>
               {% endif %}
               {% if author.npub %}
-                <p class="text-xs text-slate-600 font-mono break-all">{{ author.npub }}</p>
+                <p class="text-xs text-slate-400 font-mono break-all">{{ author.npub }}</p>
               {% endif %}
             </div>
           </div>
@@ -71,9 +71,9 @@
       </aside>
 
       <!-- Mobile Header -->
-      <div class="lg:hidden fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-slate-800/50">
+      <div class="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-slate-200">
         <div class="px-6 py-4">
-          <a href="/" class="text-2xl font-bold tracking-tight text-white">{{ site.title }}</a>
+          <a href="/" class="text-2xl font-bold tracking-tight text-slate-900">{{ site.title }}</a>
         </div>
       </div>
 
@@ -85,9 +85,9 @@
           </div>
         </main>
 
-        <footer class="border-t border-slate-800/50 px-6 lg:px-12 xl:px-16 py-8">
+        <footer class="border-t border-slate-200 px-6 lg:px-12 xl:px-16 py-8 bg-slate-50">
           <div class="max-w-5xl mx-auto">
-            <p class="text-sm text-slate-500">Generated from Nostr using <a href="https://github.com/besoeasy/NostrPress" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white transition-colors duration-200">NostrPress</a></p>
+            <p class="text-sm text-slate-500">Generated from Nostr using <a href="https://github.com/besoeasy/NostrPress" target="_blank" rel="noopener noreferrer" class="text-slate-700 hover:text-slate-900 transition-colors duration-200 font-medium">NostrPress</a></p>
           </div>
         </footer>
       </div>
