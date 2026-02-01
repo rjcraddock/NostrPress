@@ -35,7 +35,7 @@ Click a button above to deploy. You'll be prompted to enter your `NPUB`.
 ## Build
 
 ```bash
-npm run build
+NPUB=nostr_public_key npm run build
 ```
 
 Generates static site in `./dist`
