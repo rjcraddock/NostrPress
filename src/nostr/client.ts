@@ -1,5 +1,8 @@
 import { SimplePool, nip19, Event as NostrEvent, Filter } from "nostr-tools";
 import { Config, ProfileMetadata, Comment } from "../types.js";
+import { CacheManager } from "../cache/cacheManager.js";
+
+const cache = new CacheManager();
 
 export interface ResolvedIdentity {
   npub: string;
@@ -30,6 +33,14 @@ export function resolveIdentity(input: string, fallbackRelays: string[]): Resolv
 }
 
 export async function fetchProfileMetadata(pool: SimplePool, relays: string[], pubkey: string): Promise<ProfileMetadata> {
+  const cacheKey = `profile-${pubkey}`;
+  const cached = cache.get<ProfileMetadata>(cacheKey);
+  if (cached) {
+    console.log(`Using cached profile for ${pubkey}`);
+    return cached;
+  }
+
+  console.log(`Fetching profile for ${pubkey}...`);
   const filter: Filter = { kinds: [0], authors: [pubkey], limit: 10 };
   const events = await pool.querySync(relays, filter);
   const latest = events.sort((a: NostrEvent, b: NostrEvent) => b.created_at - a.created_at)[0];
@@ -38,7 +49,9 @@ export async function fetchProfileMetadata(pool: SimplePool, relays: string[], p
   }
 
   try {
-    return JSON.parse(latest.content) as ProfileMetadata;
+    const metadata = JSON.parse(latest.content) as ProfileMetadata;
+    cache.set(cacheKey, metadata);
+    return metadata;
   } catch {
     return {};
   }
@@ -58,6 +71,14 @@ function collectDeletedIds(events: NostrEvent[]): Set<string> {
 }
 
 export async function fetchArticles(pool: SimplePool, config: Config, pubkey: string): Promise<NostrEvent[]> {
+  const cacheKey = `articles-${pubkey}-${JSON.stringify(config.fetch)}`;
+  const cached = cache.get<NostrEvent[]>(cacheKey);
+  if (cached) {
+    console.log(`Using cached articles for ${pubkey}`);
+    return cached;
+  }
+
+  console.log(`Fetching articles for ${pubkey}...`);
   const relays = config.relays;
   const filters: Filter[] = [];
 
@@ -95,7 +116,9 @@ export async function fetchArticles(pool: SimplePool, config: Config, pubkey: st
     }
   }
 
-  return Array.from(deduped.values());
+  const result = Array.from(deduped.values());
+  cache.set(cacheKey, result);
+  return result;
 }
 
 export async function fetchComments(
