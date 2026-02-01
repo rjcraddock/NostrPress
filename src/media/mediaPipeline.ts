@@ -6,7 +6,7 @@ import { Article, Config, MediaAsset } from "../types.js";
 import { discoverMediaUrls } from "./mediaScan.js";
 import { CacheManager } from "../cache/cacheManager.ts";
 
-const mediaCache = new CacheManager("cache/media-map.json", 24 * 365); // Long cache for media (1 year)
+const mediaCache = new CacheManager("nostr-cache/media-map.json", 24 * 365); // Long cache for media (1 year)
 
 const COMMON_MIME_TYPES = new Set([
   "image/jpeg",
@@ -150,7 +150,7 @@ export async function processMedia(articles: Article[], config: Config): Promise
   const seenHashes = new Set<string>();
 
   // Ensure persistent cache directory exists
-  const PERSISTENT_CACHE_DIR = path.resolve(process.cwd(), "cache", "media");
+  const PERSISTENT_CACHE_DIR = path.resolve(process.cwd(), "nostr-cache", "media");
   fs.mkdirSync(PERSISTENT_CACHE_DIR, { recursive: true });
 
   const allUrls = new Set<string>();
