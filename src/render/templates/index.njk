@@ -105,18 +105,24 @@
                   {% endif %}
                 </div>
                 
-		{% if article.title and article.title != "Untitled" %}
-  		<h2 class="text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors duration-300">
-    		{{ article.title }}
-  		</h2>
-		{% endif %}
+                {% if article.title and article.title != "Untitled" %}
+                  <h2 class="text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors duration-300">
+                    {{ article.title }}
+                  </h2>
+                {% endif %}
                 
                 {% if article.summary %}
                   <p class="text-base lg:text-lg text-slate-600 leading-relaxed line-clamp-2">{{ article.summary }}</p>
                 {% endif %}
                 
                 <div class="flex items-center gap-2 text-blue-600 group-hover:text-blue-700 transition-colors duration-300">
-                  <span class="text-sm font-medium">Read article</span>
+                  <span class="text-sm font-medium">
+                    {% if article.kind == 1 %}
+                      Read post
+                    {% else %}
+                      Read article
+                    {% endif %}
+                  </span>
                   <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                   </svg>

@@ -59,6 +59,7 @@ export function parseArticle(event) {
 
   return {
     id: event.id,
+    kind: event.kind,
     title,
     slug,
     naddr,
