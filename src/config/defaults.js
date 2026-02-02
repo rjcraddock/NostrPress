@@ -17,7 +17,7 @@ export const defaultConfig = {
     dedupe: true
   },
   fetch: {
-    include_kind1: false
+    include_kind1: true
   },
   timeouts: {
     network_ms: 15000
