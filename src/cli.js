@@ -14,14 +14,14 @@ import { renderMarkdown, renderSite } from "./render/render.js";
 function parseArgs() {
   const args = process.argv.slice(2);
   let baseUrl;
-  
+
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--base-url" && i + 1 < args.length) {
       baseUrl = args[i + 1];
       break;
     }
   }
-  
+
   return { baseUrl };
 }
 
@@ -120,6 +120,16 @@ function generateRss(context, outputDir) {
   fs.writeFileSync(path.join(outputDir, "rss.xml"), rss);
 }
 
+function sanitizeTagForFilename(tag) {
+  return tag
+    .replace(/#/g, '')
+    .replace(/\?/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
 function generateSitemap(context, outputDir) {
   const urls = [];
   urls.push(`${context.site.base_url}/`);
@@ -134,9 +144,9 @@ function generateSitemap(context, outputDir) {
     for (const tag of article.tags) tagSet.add(tag);
   }
   for (const tag of tagSet) {
-    urls.push(`${context.site.base_url}/tags/${tag}/`);
+    const sanitizedTag = sanitizeTagForFilename(tag);
+    urls.push(`${context.site.base_url}/tags/${sanitizedTag}/`);
   }
-
   const entries = urls
     .map((url) => `  <url><loc>${url}</loc></url>`)
     .join("\n");

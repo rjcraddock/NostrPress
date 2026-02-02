@@ -66,6 +66,20 @@ function writeFile(target, content) {
   fs.writeFileSync(target, content);
 }
 
+/**
+ * Sanitize tag names for use in filenames and URLs
+ * Removes # and ? characters that cause issues with web servers
+ */
+function sanitizeTagForFilename(tag) {
+  return tag
+    .replace(/#/g, '')  // Remove hashtags
+    .replace(/\?/g, '')  // Remove question marks
+    .replace(/\s+/g, '-')  // Replace spaces with hyphens
+    .replace(/[^\w-]/g, '')  // Remove any other special characters except hyphens
+    .toLowerCase()  // Lowercase for consistency
+    .trim();
+}
+
 export function createRenderer(templateDir) {
   const env = nunjucks.configure(templateDir, { autoescape: true });
   env.addFilter("date", (value, format) => {
@@ -115,8 +129,10 @@ export function renderSite(context, outputDir) {
     writeFile(path.join(outputDir, `${article.slug}.html`), articleHtml);
   }
 
+  // Create tag pages with sanitized filenames
   for (const [tag, articles] of tagMap.entries()) {
+    const sanitizedTag = sanitizeTagForFilename(tag);
     const tagHtml = env.render("tag.njk", { ...context, tag, articles });
-    writeFile(path.join(outputDir, "tags", tag, "index.html"), tagHtml);
+    writeFile(path.join(outputDir, "tags", sanitizedTag, "index.html"), tagHtml);
   }
 }
