@@ -1,6 +1,9 @@
 import "dotenv/config";
 import fs from "node:fs";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
+import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
 import { SimplePool } from "nostr-tools";
 import { loadConfig } from "./config/loadConfig.js";
 import { resolveIdentity, fetchProfileMetadata, fetchArticles, fetchComments } from "./nostr/client.js";
@@ -22,6 +25,8 @@ function parseArgs(): { baseUrl?: string } {
   
   return { baseUrl };
 }
+
+const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 function ensureDir(dir: string) {
   fs.mkdirSync(dir, { recursive: true });
@@ -73,8 +78,8 @@ function buildContext(config: Config, npub: string, pubkey: string, profile: any
   };
 }
 
-function writeStaticAssets(outputDir: string) {
-  const srcJs = path.resolve("src/static/site.js");
+function writeStaticAssets(outputDir: string, rootDir: string) {
+  const srcJs = path.join(rootDir, "src/static/site.js");
   const destJs = path.join(outputDir, "js", "site.js");
   if (fs.existsSync(srcJs)) {
     fs.copyFileSync(srcJs, destJs);
@@ -83,11 +88,24 @@ function writeStaticAssets(outputDir: string) {
   }
 
   // Copy print.css
-  const srcPrintCss = path.resolve("src/styles/print.css");
+  const srcPrintCss = path.join(rootDir, "src/styles/print.css");
   const destPrintCss = path.join(outputDir, "css", "print.css");
   if (fs.existsSync(srcPrintCss)) {
     fs.copyFileSync(srcPrintCss, destPrintCss);
   }
+}
+
+function runTailwind(outputDir: string, rootDir: string) {
+  const require = createRequire(import.meta.url);
+  const tailwindCli = require.resolve("tailwindcss/lib/cli.js");
+  const input = path.join(rootDir, "src/styles/tailwind.css");
+  const output = path.join(outputDir, "css", "site.css");
+  const config = path.join(rootDir, "tailwind.config.cjs");
+
+  execFileSync(process.execPath, [tailwindCli, "-c", config, "-i", input, "-o", output], {
+    stdio: "inherit",
+    cwd: rootDir
+  });
 }
 
 function generateRss(context: RenderContext, outputDir: string) {
@@ -172,7 +190,8 @@ async function run() {
 
   const context = buildContext(config, identity.npub, identity.pubkey, profile, rendered);
   renderSite(context, config.output_dir);
-  writeStaticAssets(config.output_dir);
+  writeStaticAssets(config.output_dir, packageRoot);
+  runTailwind(config.output_dir, packageRoot);
   generateRss(context, config.output_dir);
   generateSitemap(context, config.output_dir);
 }

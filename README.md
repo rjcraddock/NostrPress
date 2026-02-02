@@ -5,6 +5,7 @@
 Nostr (Notes and Other Stuff Transmitted by Relays) is an open protocol for decentralized social apps. It aims to replace chat, microblogging, and full blogging with a simple, interoperable spec.
 
 Links:
+
 - https://nostr.com
 - https://github.com/nostr-protocol/nostr
 
@@ -15,6 +16,7 @@ Generate a modern static blog from your Nostr long-form posts (kind 30023).
 ### Why
 
 Blogs on Nostr are great, but they have drawbacks:
+
 - Discoverability is limited to relay coverage and client UX.
 - SEO is weak compared to traditional sites.
 - Media hosting can be unreliable or fragmented.
@@ -26,11 +28,25 @@ So we built NostrPress. It takes your blogs (also called articles) from Nostr an
 
 ## Quick Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/besoeasy/NostrPress&env=NPUB&envDescription=Your%20Nostr%20public%20key%20(npub1...)&project-name=nostrpress-blog)
+[![Deploy with Vercel](https://vercel.com/button)](<https://vercel.com/new/clone?repository-url=https://github.com/besoeasy/NostrPress&env=NPUB&envDescription=Your%20Nostr%20public%20key%20(npub1...)&project-name=nostrpress-blog>)
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/besoeasy/NostrPress)
 [![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/besoeasy/NostrPress)
 
 Click a button above to deploy. You'll be prompted to enter your `NPUB`.
+
+## Run via npx (GitHub)
+
+No install needed. This uses the latest code from the repo:
+
+```bash
+NPUB=nostr_public_key npx github:besoeasy/NostrPress
+```
+
+Optional base URL:
+
+```bash
+NPUB=nostr_public_key npx github:besoeasy/NostrPress -- --base-url https://example.com
+```
 
 ## Build
 

@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import MarkdownIt from "markdown-it";
 import sanitizeHtml from "sanitize-html";
 import nunjucks from "nunjucks";
@@ -85,7 +86,8 @@ export function createRenderer(templateDir: string) {
 }
 
 export function renderSite(context: RenderContext, outputDir: string) {
-  const templatesDir = path.resolve("src/render/templates");
+  const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+  const templatesDir = path.join(packageRoot, "src/render/templates");
   const env = createRenderer(templatesDir);
 
   const articlesSorted = [...context.articles].sort((a, b) => b.published_at - a.published_at);
