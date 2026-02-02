@@ -105,9 +105,11 @@
                   {% endif %}
                 </div>
                 
-                <h2 class="text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors duration-300">
-                  {{ article.title }}
-                </h2>
+		{% if article.title and article.title != "Untitled" %}
+  		<h2 class="text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors duration-300">
+    		{{ article.title }}
+  		</h2>
+		{% endif %}
                 
                 {% if article.summary %}
                   <p class="text-base lg:text-lg text-slate-600 leading-relaxed line-clamp-2">{{ article.summary }}</p>
