@@ -36,7 +36,16 @@ export function parseArticle(event) {
   const tags = event.tags;
   const title = getTagValue(tags, "title") || extractTitle(event.content) || "Untitled";
   const slugFromTag = getTagValue(tags, "d");
-  const slug = slugFromTag || slugify(title, { lower: true, strict: true });
+
+// Use event ID for slug if title is "Untitled" to avoid collisions
+  let slug;
+  if (slugFromTag) {
+    slug = slugFromTag;
+  } else if (title === "Untitled") {
+    slug = `note-${event.id.substring(0, 12)}`; // Use first 12 chars of event ID
+  } else {
+    slug = slugify(title, { lower: true, strict: true });
+  }
   const summary = getTagValue(tags, "summary") || "";
   const image = getTagValue(tags, "image");
   const publishedTag = getTagValue(tags, "published_at");
