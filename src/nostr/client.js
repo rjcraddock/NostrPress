@@ -63,6 +63,37 @@ function collectDeletedIds(events) {
   return deleted;
 }
 
+/**
+ * Determines if we should INCLUDE this post in the blog
+ * @param {Object} event - Nostr event
+ * @param {string} myPubkey - Your pubkey (hex)
+ * @returns {boolean} - true if we should include it
+ */
+function shouldIncludePost(event, myPubkey) {
+  // Always include kind 30023 (long-form articles)
+  if (event.kind === 30023) return true;
+
+  // For kind 1 (notes), apply filtering logic
+  const eTags = event.tags.filter(tag => tag[0] === 'e');
+  const pTags = event.tags.filter(tag => tag[0] === 'p');
+
+  // Always include if no event references (original post)
+  if (eTags.length === 0) return true;
+
+  // Check if it's a reply to others
+  const mentionsOthers = pTags.some(tag => tag[1] !== myPubkey);
+  const isReplyToOthers = eTags.length > 0 && mentionsOthers;
+
+  if (!isReplyToOthers) {
+    // It's a self-thread or reply to own post - include it
+    return true;
+  }
+
+  // It's a reply to someone else - check length
+  // Include if content is substantial (300+ chars)
+  return event.content.length >= 300;
+}
+
 export async function fetchArticles(pool, config, pubkey) {
   const cacheKey = `articles-${pubkey}-${JSON.stringify(config.fetch)}`;
   const cached = cache.get(cacheKey);
@@ -101,13 +132,30 @@ export async function fetchArticles(pool, config, pubkey) {
 
   const deletedIds = collectDeletedIds(deletions);
   const deduped = new Map();
+
+  // Track filtering stats
+  let totalEvents = 0;
+  let filteredOut = 0;
+
   for (const event of events) {
+    totalEvents++;
+
     if (!event.content || !event.content.trim()) continue;
     if (deletedIds.has(event.id)) continue;
+
+    // Apply custom filter for replies to others
+    if (!shouldIncludePost(event, pubkey)) {
+      filteredOut++;
+      console.log(`Filtered out short reply (${event.content.length} chars): ${event.content.substring(0, 50)}...`);
+      continue;
+    }
+
     if (!deduped.has(event.id)) {
       deduped.set(event.id, event);
     }
   }
+
+  console.log(`Filtering results: ${totalEvents} total events, ${filteredOut} filtered out, ${deduped.size} included`);
 
   const result = Array.from(deduped.values());
   cache.set(cacheKey, result);
@@ -141,14 +189,14 @@ export async function fetchComments(pool, relays, articleEventIds) {
   // Fetch author profiles for all comment authors
   const authorPubkeys = [...new Set(events.map(e => e.pubkey))];
   const profiles = new Map();
-  
+
   if (authorPubkeys.length > 0) {
     const profileFilter = {
       kinds: [0],
       authors: authorPubkeys
     };
     const profileEvents = await pool.querySync(relays, profileFilter);
-    
+
     for (const event of profileEvents) {
       try {
         const metadata = JSON.parse(event.content);
