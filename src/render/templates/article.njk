@@ -82,7 +82,9 @@
           </span>
           {% endif %}
         </div>
-        <h1 class="text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-slate-900 leading-tight" itemprop="headline">{{ article.title }}</h1>
+        {% if article.title and article.title != "Untitled" %}
+	<h1 class="text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-slate-900 leading-tight" itemprop="headline">{{ article.title }}</h1>
+	{% endif %}
       </div>
       
       {% if article.tags.length %}
