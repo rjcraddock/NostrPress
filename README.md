@@ -42,10 +42,10 @@ No install needed. This uses the latest code from the repo:
 NPUB=nostr_public_key npx github:besoeasy/NostrPress
 ```
 
-Optional base URL:
+With base URL (for production deployment):
 
 ```bash
-NPUB=nostr_public_key npx github:besoeasy/NostrPress -- --base-url https://example.com
+NPUB=nostr_public_key BASE_URL=https://example.com npx github:besoeasy/NostrPress
 ```
 
 ## Build
@@ -69,13 +69,13 @@ No configuration needed - works standalone.
 
 ## Environment Variables
 
-| Variable      | Required | Description                            |
-| ------------- | -------- | -------------------------------------- |
-| `NPUB`        | ✅       | Your Nostr public key                  |
-| `RELAYS`      | ❌       | Comma-separated relay URLs             |
-| `OUTPUT_DIR`  | ❌       | Output directory (default: `./dist`)   |
-| `MAX_SIZE_MB` | ❌       | Max media file size (default: 20)      |
-| `BASE_URL`    | ❌       | Auto-detected from deployment platform |
+| Variable      | Required | Description                                                    |
+| ------------- | -------- | -------------------------------------------------------------- |
+| `NPUB`        | ✅       | Your Nostr public key                                          |
+| `RELAYS`      | ❌       | Comma-separated relay URLs                                     |
+| `OUTPUT_DIR`  | ❌       | Output directory (default: `./dist`)                           |
+| `MAX_SIZE_MB` | ❌       | Max media file size (default: 20)                              |
+| `BASE_URL`    | ❌       | Base URL for links (default: `.` for relative paths)          |
 
 ## Features
 

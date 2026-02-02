@@ -7,16 +7,23 @@ export function loadConfig(cliBaseUrl) {
   
   // Auto-detect base URL from multiple sources with priority:
   // 1. CLI flag (--base-url)
-  // 2. SITE_URL (Netlify/Vercel)
-  // 3. PUBLIC_URL (some hosting providers)
-  // 4. BASE_URL (optional .env)
-  // 5. Dot (relative path for local browsing)
-  const baseUrl = 
+  // 2. BASE_URL (user-defined)
+  // 3. URL (Netlify)
+  // 4. VERCEL_URL (Vercel)
+  // 5. CF_PAGES_URL (Cloudflare Pages)
+  // 6. Dot (relative path for local browsing)
+  let baseUrl = 
     cliBaseUrl || 
-    process.env.SITE_URL || 
-    process.env.PUBLIC_URL || 
     process.env.BASE_URL || 
+    process.env.URL || 
+    process.env.VERCEL_URL ||
+    process.env.CF_PAGES_URL ||
     ".";
+  
+  // Vercel URL doesn't include protocol, add it
+  if (baseUrl === process.env.VERCEL_URL && baseUrl !== ".") {
+    baseUrl = `https://${baseUrl}`;
+  }
   
   const maxSizeMb = process.env.MAX_SIZE_MB ? Number(process.env.MAX_SIZE_MB) : defaultConfig.media.max_size_mb;
 
