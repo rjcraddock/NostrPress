@@ -2,7 +2,7 @@ name: Weekly Nostr Blog Deploy
 
 on:
   schedule:
-    # Runs every Sunday at 2 AM UTC
+    # Runs every Sunday at 2 AM UTC 
     - cron: '0 2 * * 0'
   workflow_dispatch:  # Allows manual trigger
 
