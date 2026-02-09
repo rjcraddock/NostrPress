@@ -32,6 +32,14 @@ function extractTitle(content) {
   return match?.[1]?.trim();
 }
 
+function convertUrlsToMarkdown(content) {
+  // Convert standalone image URLs to markdown image syntax
+  return content.replace(
+    /(^|\s)(https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp|mp4|webm))/gi,
+    '$1![]($2)'
+  );
+}
+
 export function parseArticle(event) {
   const tags = event.tags;
   const title = getTagValue(tags, "title") || extractTitle(event.content) || "Untitled";
@@ -73,7 +81,7 @@ export function parseArticle(event) {
     slug,
     naddr,
     summary,
-    content: event.content,
+    content: event.kind === 1 ? convertUrlsToMarkdown(event.content) : event.content,
     html: "",
     published_at,
     tags: tagsList,
