@@ -74,7 +74,7 @@
 {% block content %}
   <div class="space-y-12">
     <header>
-      <h1 class="text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-slate-100 mb-4">Latest</h1>
+      <h1 class="text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-slate-900 mb-4">Latest</h1>
       <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full"></div>
     </header>
 
@@ -82,7 +82,7 @@
       {% for article in articles %}
         <article class="group relative">
           <a href="{{ site.base_url }}/{{ article.slug }}.html" class="block">
-            <div class="relative rounded-2xl border border-slate-700 bg-slate-800 overflow-hidden transition-all duration-500 ease-out hover:border-blue-600 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1">
+            <div class="relative rounded-2xl border border-slate-200 bg-white overflow-hidden transition-all duration-500 ease-out hover:border-blue-300 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1">
               <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/0 to-indigo-500/0 opacity-0 group-hover:opacity-5 transition-opacity duration-500"></div>
               
               {% if article.image %}
@@ -94,7 +94,7 @@
               
               <div class="relative p-8 lg:p-10 space-y-4">
                 <div class="flex items-center gap-3">
-                  <time class="text-sm font-medium text-slate-400 tracking-wide">{{ article.published_at | date("Y-m-d") }}</time>
+                  <time class="text-sm font-medium text-slate-500 tracking-wide">{{ article.published_at | date("Y-m-d") }}</time>
                   {% if article.tags.length %}
                     <span class="text-slate-300">•</span>
                     <div class="flex flex-wrap gap-2">
@@ -106,13 +106,13 @@
                 </div>
                 
                 {% if article.title and article.title != "Untitled" %}
-                  <h2 class="text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight text-slate-100 group-hover:text-blue-400 transition-colors duration-300">
+                  <h2 class="text-2xl lg:text-3xl xl:text-4xl font-bold tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors duration-300">
                     {{ article.title }}
                   </h2>
                 {% endif %}
                 
                 {% if article.summary %}
-                  <p class="text-base lg:text-lg text-slate-400 leading-relaxed line-clamp-2">{{ article.summary }}</p>
+                  <p class="text-base lg:text-lg text-slate-600 leading-relaxed line-clamp-2">{{ article.summary }}</p>
                 {% endif %}
                 
                 <div class="flex items-center gap-2 text-blue-600 group-hover:text-blue-700 transition-colors duration-300">
