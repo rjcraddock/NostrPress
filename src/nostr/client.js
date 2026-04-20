@@ -195,7 +195,8 @@ async function fetchArchivedPosts(pubkey) {
       .from('nostr_posts')
       .select('*')
       .eq('pubkey', pubkey)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(10000);
 
     if (error) {
       console.error('Error fetching archived posts:', error);
