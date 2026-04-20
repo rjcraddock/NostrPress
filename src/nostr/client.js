@@ -89,19 +89,19 @@ function shouldIncludePost(event, myPubkey) {
   // For kind 1 (notes), apply filtering logic
   const eTags = event.tags.filter(tag => tag[0] === 'e');
   const pTags = event.tags.filter(tag => tag[0] === 'p');
-  
+
   // Always include if no event references (original post)
   if (eTags.length === 0) return true;
-  
+
   // Check if it's a reply to others
   const mentionsOthers = pTags.some(tag => tag[1] !== myPubkey);
   const isReplyToOthers = eTags.length > 0 && mentionsOthers;
-  
+
   if (!isReplyToOthers) {
     // It's a self-thread or reply to own post - include it
     return true;
   }
-  
+
   // It's a reply to someone else - check length
   // Include if content is substantial (300+ chars)
   return event.content.length >= 300;
@@ -149,7 +149,7 @@ async function archivePostsToSupabase(events, pubkey) {
   }
 
   const filtered = events.filter(e => shouldIncludePost(e, pubkey));
-  
+
   if (filtered.length === 0) {
     console.log('No new posts to archive');
     return;
@@ -169,9 +169,9 @@ async function archivePostsToSupabase(events, pubkey) {
     // Use upsert to avoid duplicates
     const { data, error } = await supabase
       .from('nostr_posts')
-      .upsert(posts, { 
+      .upsert(posts, {
         onConflict: 'event_id',
-        ignoreDuplicates: true 
+        ignoreDuplicates: true
       });
 
     if (error) {
@@ -195,7 +195,8 @@ async function fetchArchivedPosts(pubkey) {
       .from('nostr_posts')
       .select('*')
       .eq('pubkey', pubkey)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(10000);
 
     if (error) {
       console.error('Error fetching archived posts:', error);
@@ -227,7 +228,7 @@ export async function fetchArticles(pool, config, pubkey) {
   if (supabase) {
     // SUPABASE ARCHIVAL MODE
     console.log('=== Supabase Archival Mode ===');
-    
+
     // 1. Get last archived date from document table
     const since = await getLastArchivedDate();
     console.log(`Fetching posts since: ${since > 0 ? new Date(since * 1000).toISOString() : 'beginning of time'}`);
@@ -243,11 +244,11 @@ export async function fetchArticles(pool, config, pubkey) {
     filters.push(baseFilter);
 
     if (config.fetch.include_kind1) {
-      filters.push({ 
-        authors: [pubkey], 
-        kinds: [1], 
-        since: config.fetch.since || since, 
-        until: config.fetch.until 
+      filters.push({
+        authors: [pubkey],
+        kinds: [1],
+        since: config.fetch.since || since,
+        until: config.fetch.until
       });
     }
 
@@ -326,28 +327,28 @@ export async function fetchArticles(pool, config, pubkey) {
 
     const deletedIds = collectDeletedIds(deletions);
     const deduped = new Map();
-    
+
     let totalEvents = 0;
     let filteredOut = 0;
-    
+
     for (const event of events) {
       totalEvents++;
-      
+
       if (!event.content || !event.content.trim()) continue;
       if (deletedIds.has(event.id)) continue;
-      
+
       if (!shouldIncludePost(event, pubkey)) {
         filteredOut++;
         continue;
       }
-      
+
       if (!deduped.has(event.id)) {
         deduped.set(event.id, event);
       }
     }
 
     console.log(`Filtering results: ${totalEvents} total events, ${filteredOut} filtered out, ${deduped.size} included`);
-    
+
     const result = Array.from(deduped.values());
     cache.set(cacheKey, result);
     return result;
@@ -378,14 +379,14 @@ export async function fetchComments(pool, relays, articleEventIds) {
 
   const authorPubkeys = [...new Set(events.map(e => e.pubkey))];
   const profiles = new Map();
-  
+
   if (authorPubkeys.length > 0) {
     const profileFilter = {
       kinds: [0],
       authors: authorPubkeys
     };
     const profileEvents = await pool.querySync(relays, profileFilter);
-    
+
     for (const event of profileEvents) {
       try {
         const metadata = JSON.parse(event.content);
