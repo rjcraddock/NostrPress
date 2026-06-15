@@ -30,4 +30,4 @@ Generates a static site in `./dist` folder. Deploy to any hosting platform or br
 
 ## Features
 
-Static blog with tags, RSS, sitemap, reading time, Nostr comments, media caching, and responsive design.
+Static blog with tags, RSS, sitemap, reading time, Nostr comments, media caching, and responsive design. 
