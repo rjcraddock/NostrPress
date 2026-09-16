@@ -187,24 +187,44 @@ async function archivePostsToSupabase(events, pubkey) {
 /**
  * Fetch all posts from nostr_posts table
  */
+/**
+ * Fetch all posts from nostr_posts table
+ */
 async function fetchArchivedPosts(pubkey) {
   if (!supabase) return [];
 
   try {
-    const { data, error } = await supabase
-      .from('nostr_posts')
-      .select('*')
-      .eq('pubkey', pubkey)
-      .order('created_at', { ascending: false })
-      .limit(10000);
+    const allRows = [];
+    const pageSize = 1000;
+    let from = 0;
 
-    if (error) {
-      console.error('Error fetching archived posts:', error);
-      return [];
+    while (true) {
+      const { data, error } = await supabase
+        .from('nostr_posts')
+        .select('*')
+        .eq('pubkey', pubkey)
+        .order('created_at', { ascending: false })
+        .order('event_id', { ascending: false })
+        .range(from, from + pageSize - 1);
+
+      if (error) {
+        console.error('Error fetching archived posts:', error);
+        return [];
+      }
+
+      const rows = data || [];
+
+      allRows.push(...rows);
+
+      if (rows.length < pageSize) {
+        break;
+      }
+
+      from += pageSize;
     }
 
     // Convert back to Nostr event format
-    const events = (data || []).map(row => ({
+    const events = allRows.map(row => ({
       id: row.event_id,
       pubkey: row.pubkey,
       created_at: Math.floor(new Date(row.created_at).getTime() / 1000),
