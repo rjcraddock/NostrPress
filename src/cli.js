@@ -130,29 +130,88 @@ function sanitizeTagForFilename(tag) {
     .trim();
 }
 
+function xmlEscape(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+function formatSitemapDate(timestamp) {
+  return new Date(timestamp).toISOString().slice(0, 10);
+}
+
 function generateSitemap(context, outputDir) {
-  const urls = [];
-  urls.push(`${context.site.base_url}/`);
-  urls.push(`${context.site.base_url}/author/`);
+  const entries = [];
 
+  const latestArticleDate =
+    context.articles.length > 0
+      ? Math.max(...context.articles.map(article => article.published_at))
+      : Date.now();
+
+  // Homepage
+  entries.push({
+    url: `${context.site.base_url}/`,
+    lastmod: formatSitemapDate(latestArticleDate)
+  });
+
+  // Individual article/note pages
   for (const article of context.articles) {
-    urls.push(`${context.site.base_url}/${article.slug}.html`);
+    entries.push({
+      url: `${context.site.base_url}/${article.slug}.html`,
+      lastmod: formatSitemapDate(article.published_at)
+    });
   }
 
-  const tagSet = new Set();
+  // Tag pages: lastmod = newest article carrying that tag
+  const tagDates = new Map();
+
   for (const article of context.articles) {
-    for (const tag of article.tags) tagSet.add(tag);
+    for (const tag of article.tags) {
+      const current = tagDates.get(tag) || 0;
+      if (article.published_at > current) {
+        tagDates.set(tag, article.published_at);
+      }
+    }
   }
-  for (const tag of tagSet) {
+
+  for (const [tag, lastmod] of tagDates.entries()) {
     const sanitizedTag = sanitizeTagForFilename(tag);
-    urls.push(`${context.site.base_url}/tags/${sanitizedTag}/`);
+
+    entries.push({
+      url: `${context.site.base_url}/tags/${sanitizedTag}/`,
+      lastmod: formatSitemapDate(lastmod)
+    });
   }
-  const entries = urls
-    .map((url) => `  <url><loc>${url}</loc></url>`)
+
+  const xmlEntries = entries
+    .map(
+      entry =>
+        `  <url>\n` +
+        `    <loc>${xmlEscape(entry.url)}</loc>\n` +
+        `    <lastmod>${entry.lastmod}</lastmod>\n` +
+        `  </url>`
+    )
     .join("\n");
 
-  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>`;
+  const sitemap =
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    `${xmlEntries}\n` +
+    `</urlset>\n`;
+
   fs.writeFileSync(path.join(outputDir, "sitemap.xml"), sitemap);
+}
+
+function generateRobots(context, outputDir) {
+  const robots =
+    `User-agent: *\n` +
+    `Allow: /\n\n` +
+    `Sitemap: ${context.site.base_url}/sitemap.xml\n`;
+
+  fs.writeFileSync(path.join(outputDir, "robots.txt"), robots);
 }
 
 async function run() {
@@ -203,6 +262,7 @@ async function run() {
   runTailwind(config.output_dir, packageRoot);
   generateRss(context, config.output_dir);
   generateSitemap(context, config.output_dir);
+  generateRobots(context, config.output_dir);
 }
 
 run().catch((error) => {
