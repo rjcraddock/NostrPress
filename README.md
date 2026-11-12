@@ -2,7 +2,7 @@
 
 Generate a modern static blog from your [Nostr](https://github.com/nostr-protocol/nostr) long-form posts (kind 30023). Publish once on Nostr, get a SEO-optimized website automatically.
 
-## Quick Start
+## Quick Start 20261112 Commit to keep alive
 
 **Option 1: One-click deploy**
 
